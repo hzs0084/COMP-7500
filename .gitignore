@@ -1,0 +1,7 @@
+# Ignore the virtual environment
+*.7500-venv
+
+# Igonre the VSCode files
+*.vscode
+
+
