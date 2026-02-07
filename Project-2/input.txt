@@ -1,0 +1,11 @@
+This is the second project of COMP7500 class.
+There was a lot going on so i could not submit the project on time.
+
+Tabs	should	also	count	as	words.
+Newlines
+should
+not
+break
+anything.
+
+End.
