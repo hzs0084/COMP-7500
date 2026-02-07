@@ -19,8 +19,8 @@ static void print_usage(void) {
 
 /*
  * Count words in a buffer of bytes.
- * A "word" is any maximal run of non-whitespace characters.
- * This naturally counts numbers as words too (e.g., "6", "gr8").
+ * A "word" is any maimum run of non-whitespace characters.
+ * This idea will count numbers as words too (e.g., "6", "gr8").
  */
 static int count_words_in_bytes(const unsigned char *buf, ssize_t n, int *in_word) {
     int count = 0;
@@ -204,7 +204,7 @@ int main(int argc, char *argv[]) {
 
         printf("Process 1: The total number of words is %d.\n", total_words);
 
-        // Ensure child is fully done (FAQ note)
+        // Ensure child is fully done
         waitpid(pid, NULL, 0);
         return 0;
     }
