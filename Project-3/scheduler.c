@@ -5,10 +5,40 @@
 #include <time.h>
 #include <unistd.h>
 
+
+static long compute_expected_wait_locked(const aubatch_state_t *st) {
+  long wait = 0;
+
+  // Simple method: count the entire expected time of running job, if any
+  if (st->has_running) {
+    wait += st->running_job.expected_cpu_time;
+  }
+
+  // Sum expected times of jobs currently waiting in queue (already ordered)
+  for (size_t i = 0; i < st->queue.len; i++) {
+    wait += st->queue.buf[i].expected_cpu_time;
+  }
+  return wait;
+}
+
 static void print_job_list_locked(const aubatch_state_t *st) {
-  printf("Total number of jobs in the queue: %zu\n", queue_len(&st->queue));
+  size_t total = st->queue.len + (st->has_running ? 1 : 0);
+
+  printf("Total number of jobs in the queue: %zu\n", total);
   printf("Scheduling Policy: %s.\n", policy_str(st->queue.policy));
-  printf("Name\tCPU_Time\tPri\tArrival_time\tStatus\n");
+  printf("Name\tCPU_Time\tPri\tArrival_time\tProgress\n");
+
+  if (st->has_running) {
+    const job_t *j = &st->running_job;
+
+    char ts[32];
+    struct tm tmv;
+    localtime_r(&j->arrival_time, &tmv);
+    strftime(ts, sizeof(ts), "%H:%M:%S", &tmv);
+
+    printf("%s\t%d\t\t%d\t%s\t\tRun\n",
+           j->name, j->expected_cpu_time, j->priority, ts);
+  }
 
   for (size_t i = 0; i < st->queue.len; i++) {
     const job_t *j = &st->queue.buf[i];
@@ -18,12 +48,8 @@ static void print_job_list_locked(const aubatch_state_t *st) {
     localtime_r(&j->arrival_time, &tmv);
     strftime(ts, sizeof(ts), "%H:%M:%S", &tmv);
 
-    const char *status =
-      (j->status == JOB_WAITING) ? "Wait" :
-      (j->status == JOB_RUNNING) ? "Run" : "Done";
-
-    printf("%s\t%d\t\t%d\t%s\t\t%s\n",
-           j->name, j->expected_cpu_time, j->priority, ts, status);
+    printf("%s\t%d\t\t%d\t%s\n",
+           j->name, j->expected_cpu_time, j->priority, ts);
   }
 }
 
@@ -106,7 +132,10 @@ void* scheduler_thread(void *arg) {
       if (!st->shutting_down) {
         if (queue_insert(&st->queue, &job) == 0) {
           printf("Job %s was submitted.\n", job.name);
+          st->total_jobs_submitted++;
           printf("Total number of jobs in the queue: %zu\n", queue_len(&st->queue));
+          long expected_wait = compute_expected_wait_locked(st);
+          printf("Expected waiting time: %ld seconds\n", expected_wait);
           printf("Scheduling Policy: %s.\n", policy_str(st->queue.policy));
           pthread_cond_signal(&st->cv_not_empty);
         } else {
