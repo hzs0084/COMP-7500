@@ -6,15 +6,15 @@
 #include <unistd.h>
 
 
-static long compute_expected_wait_locked(const aubatch_state_t *st) {
+static long compute_expected_wait_for_new_job_locked(const aubatch_state_t *st) {
   long wait = 0;
 
-  // Simple method: count the entire expected time of running job, if any
+  // Simple method (FAQ OK): count full expected time of running job
   if (st->has_running) {
     wait += st->running_job.expected_cpu_time;
   }
 
-  // Sum expected times of jobs currently waiting in queue (already ordered)
+  // Sum expected times of all currently waiting jobs (ahead of the new one)
   for (size_t i = 0; i < st->queue.len; i++) {
     wait += st->queue.buf[i].expected_cpu_time;
   }
@@ -106,9 +106,10 @@ void* scheduler_thread(void *arg) {
         (cmd.type == CMD_PRIORITY) ? POLICY_PRIORITY : POLICY_FCFS;
 
       pthread_mutex_lock(&st->mtx);
+      size_t waiting = st->queue.len;   // only waiting jobs (running is separate)
       queue_reschedule(&st->queue, newp);
-      printf("Scheduling policy is switched to %s. All waiting jobs have been rescheduled.\n",
-             policy_str(newp));
+      printf("Scheduling policy is switched to %s. All the %zu waiting jobs\nhave been rescheduled.\n",
+             policy_str(newp), waiting);
       pthread_mutex_unlock(&st->mtx);
       continue;
     }
@@ -130,13 +131,19 @@ void* scheduler_thread(void *arg) {
       }
 
       if (!st->shutting_down) {
+        // Compute waiting time BEFORE insertion so it doesn't include this new job.
+        long expected_wait = compute_expected_wait_for_new_job_locked(st);
+
         if (queue_insert(&st->queue, &job) == 0) {
           printf("Job %s was submitted.\n", job.name);
           st->total_jobs_submitted++;
-          printf("Total number of jobs in the queue: %zu\n", queue_len(&st->queue));
-          long expected_wait = compute_expected_wait_locked(st);
+
+          size_t total = st->queue.len + (st->has_running ? 1 : 0);
+          printf("Total number of jobs in the queue: %zu\n", total);
+
           printf("Expected waiting time: %ld seconds\n", expected_wait);
           printf("Scheduling Policy: %s.\n", policy_str(st->queue.policy));
+
           pthread_cond_signal(&st->cv_not_empty);
         } else {
           puts("error: queue insert failed.");
