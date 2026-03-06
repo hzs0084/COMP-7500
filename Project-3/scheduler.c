@@ -81,8 +81,12 @@ void* scheduler_thread(void *arg) {
     if (cmd.type == CMD_NONE) continue;
 
     if (cmd.type == CMD_HELP) {
-      print_help();
-      continue;
+    if (cmd.help_test_only) {
+        print_test_help();
+    } else {
+        print_help();
+    }
+    continue;
     }
 
     if (cmd.type == CMD_QUIT) {
