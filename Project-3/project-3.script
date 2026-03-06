@@ -1,0 +1,155 @@
+Script started on 2026-03-05 21:45:22-06:00 [TERM="xterm-256color" TTY="/dev/pts/6" COLUMNS="192" LINES="18"]
+[?2004h]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ [7m./aubatch <<'EOF'[27m
+[7mrun ./batch_job 20 2[27m
+[7mrun ./batch_job 5 2[27m
+[7mrun ./batch_job 8 2[27m
+[7mlist[27m
+[7mquit[27m
+[7mEOF[27m[A[A[A[A[A[A]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ ./aubatch <<'EOF'
+run ./batch_job 20 2
+run ./batch_job 5 2
+run ./batch_job 8 2
+list
+quit
+EOF
+[?2004lWelcome to Hemant's batch job scheduler Version 1.0
+Type 'help' to find more about AUbatch commands.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 1
+Expected waiting time: 0 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 2
+Expected waiting time: 20 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 3
+Expected waiting time: 25 seconds
+Scheduling Policy: FCFS.
+> Total number of jobs in the queue: 3
+Scheduling Policy: FCFS.
+Name            CPU_Time   Pri    Arrival_time Progress  
+./batch_job     20         2      21:45:34     Run       
+./batch_job     5          2      21:45:34     Wait      
+./batch_job     8          2      21:45:34     Wait      
+> Total number of job submitted: 3
+Average turnaround time: 26.00 seconds
+Average CPU time: 11.00 seconds
+Average waiting time: 15.00 seconds
+Throughput: 0.091 No./second
+AUbatch exiting.
+[?2004h]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ [7m./aubatch <<'EOF'[27m
+[7mrun ./batch_job 40 2[27m
+[7mrun ./batch_job 15 2[27m
+[7mrun ./batch_job 5 2[27m
+[7mrun ./batch_job 25 2[27m
+[7mrun ./batch_job 10 2[27m
+[7mlist[27m
+[7msjf[27m
+[7mlist[27m
+[7mquit[27m
+[7mEOF[27m[A[A[A[A[A[A[A[A[A[A]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ ./aubatch <<'EOF'
+run ./batch_job 40 2
+run ./batch_job 15 2
+run ./batch_job 5 2
+run ./batch_job 25 2
+run ./batch_job 10 2
+list
+sjf
+list
+quit
+EOF
+[?2004lWelcome to Hemant's batch job scheduler Version 1.0
+Type 'help' to find more about AUbatch commands.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 1
+Expected waiting time: 0 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 2
+Expected waiting time: 40 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 3
+Expected waiting time: 55 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 4
+Expected waiting time: 60 seconds
+Scheduling Policy: FCFS.
+> Job ./batch_job was submitted.
+Total number of jobs in the queue: 5
+Expected waiting time: 85 seconds
+Scheduling Policy: FCFS.
+> Total number of jobs in the queue: 5
+Scheduling Policy: FCFS.
+Name            CPU_Time   Pri    Arrival_time Progress  
+./batch_job     40         2      21:46:11     Wait      
+./batch_job     15         2      21:46:11     Wait      
+./batch_job     5          2      21:46:11     Wait      
+./batch_job     25         2      21:46:11     Wait      
+./batch_job     10         2      21:46:11     Wait      
+> Scheduling policy is switched to SJF. All the 5 waiting jobs
+have been rescheduled.
+> Total number of jobs in the queue: 5
+Scheduling Policy: SJF.
+Name            CPU_Time   Pri    Arrival_time Progress  
+./batch_job     5          2      21:46:11     Wait      
+./batch_job     10         2      21:46:11     Wait      
+./batch_job     15         2      21:46:11     Wait      
+./batch_job     25         2      21:46:11     Wait      
+./batch_job     40         2      21:46:11     Wait      
+> Total number of job submitted: 5
+Average turnaround time: 40.00 seconds
+Average CPU time: 19.00 seconds
+Average waiting time: 21.00 seconds
+Throughput: 0.053 No./second
+AUbatch exiting.
+[?2004h]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ [7m./aubatch <<'EOF'[27m
+[7mhelp -test[27m
+[7mtest ./batch_job fcfs 5 3 1 3[27m
+[7mtest ./batch_job sjf 5 3 1 3[27m
+[7mtest ./batch_job priority 5 3 1 3 0.5[27m
+[7mquit[27m
+[7mEOF[27m[A[A[A[A[A[A]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ ./aubatch <<'EOF'
+help -test
+test ./batch_job fcfs 5 3 1 3
+test ./batch_job sjf 5 3 1 3
+test ./batch_job priority 5 3 1 3 0.5
+quit
+EOF
+[?2004lWelcome to Hemant's batch job scheduler Version 1.0
+Type 'help' to find more about AUbatch commands.
+> test <benchmark> <policy> <num_of_jobs> <priority_levels> <min_CPU_time> <max_CPU_time> [arrival_rate]
+ benchmark: executable benchmark path (example: ./batch_job)
+ policy: fcfs | sjf | priority
+ num_of_jobs: number of jobs to auto-submit
+ priority_levels: random priorities will be chosen in [1, priority_levels]
+ min_CPU_time: minimum randomly generated CPU time
+ max_CPU_time: maximum randomly generated CPU time
+ arrival_rate: optional jobs/second; if omitted, the scheduler may use its default behavior
+> Total number of job submitted: 5
+Average turnaround time: 7.40 seconds
+Average CPU time: 2.60 seconds
+Average waiting time: 4.80 seconds
+Throughput: 0.385 No./second
+> Total number of job submitted: 5
+Average turnaround time: 5.60 seconds
+Average CPU time: 2.20 seconds
+Average waiting time: 3.40 seconds
+Throughput: 0.455 No./second
+> Total number of job submitted: 5
+Average turnaround time: 2.40 seconds
+Average CPU time: 2.20 seconds
+Average waiting time: 0.20 seconds
+Throughput: 0.455 No./second
+> Total number of job submitted: 15
+Average turnaround time: 5.13 seconds
+Average CPU time: 2.33 seconds
+Average waiting time: 2.80 seconds
+Throughput: 0.417 No./second
+AUbatch exiting.
+[?2004h]0;hzs0084@kandah1: ~/Downloads/Spring-2026/COMP-7500/Project-3[01;32mhzs0084@kandah1[00m:[01;34m~/Downloads/Spring-2026/COMP-7500/Project-3[00m$ exit
+[?2004lexit
+
+Script done on 2026-03-05 21:48:33-06:00 [COMMAND_EXIT_CODE="0"]
