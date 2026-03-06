@@ -23,7 +23,7 @@ static int cmp_sjf(const void *a, const void *b) {
 static int cmp_priority(const void *a, const void *b) {
   const job_t *ja = (const job_t*)a;
   const job_t *jb = (const job_t*)b;
-  // Smaller number = higher priority (common convention). Adjust if your class expects opposite.
+  // Smaller number = higher priority (common convention).
   if (ja->priority != jb->priority)
     return (ja->priority - jb->priority);
   // tie-break by arrival then id

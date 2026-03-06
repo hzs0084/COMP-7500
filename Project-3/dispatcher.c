@@ -1,4 +1,10 @@
 // dispatcher.c
+#define DISPATCHER_DEBUG 0
+#if DISPATCHER_DEBUG
+#define DLOG(...) fprintf(stderr, __VA_ARGS__)
+#else
+#define DLOG(...)
+#endif
 #include "dispatcher.h"
 
 #include <errno.h>
@@ -79,16 +85,12 @@ void* dispatcher_thread(void *arg) {
     if (!have_job) continue;
 
     // Log to stderr so it doesn't mess up the interactive prompt output
-    fprintf(stderr, "[Dispatcher] Running job: %s (exp=%d, pri=%d)\n",
-            job.name, job.expected_cpu_time, job.priority);
+    DLOG("[Dispatcher] Running job: %s (exp=%d, pri=%d)\n",
+     job.name, job.expected_cpu_time, job.priority);
 
     // Run outside lock
-    int status = run_job_execv(&job);
+    run_job_execv(&job);
     time_t end_time = time(NULL);
-
-    // Values copied for printing after unlock
-    char name_copy[128];
-    long wall_seconds = 0;
 
     // ---- Critical section: finalize running job + metrics ----
     pthread_mutex_lock(&st->mtx);
@@ -110,19 +112,16 @@ void* dispatcher_thread(void *arg) {
       st->first_start = st->running_job.start_time;
       st->has_first_start = 1;
     }
+    
     st->last_end = st->running_job.end_time;
-
-    // Copy for printing after unlock (avoid holding lock during I/O)
-    snprintf(name_copy, sizeof(name_copy), "%s", st->running_job.name);
-    wall_seconds = (long)(st->running_job.end_time - st->running_job.start_time);
 
     st->has_running = 0;
 
     pthread_mutex_unlock(&st->mtx);
     // ---- End critical section ----
 
-    fprintf(stderr, "[Dispatcher] Finished job: %s (status=%d, wall=%lds)\n",
-            name_copy, status, wall_seconds);
+    DLOG("[Dispatcher] Finished job: %s (status=%d, wall=%lds)\n",
+     name_copy, status, wall_seconds);
   }
 
   return NULL;

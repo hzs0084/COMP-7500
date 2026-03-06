@@ -15,7 +15,7 @@ typedef struct {
   size_t cap;
   size_t len;
 
-  // Non-preemptive: if you keep running job at head, you can track it here too.
+  // Non-preemptive: keep running job at head, can track it here too.
   int next_job_id;
   sched_policy_t policy;
 } job_queue_t;
@@ -35,8 +35,8 @@ int  queue_insert(job_queue_t *q, const job_t *job);
 int  queue_pop(job_queue_t *q, job_t *out);
 
 // Re-sort waiting jobs according to new policy.
-// Note: This should NOT preempt a running job. In this skeleton we remove jobs when dispatched,
-// so we can simply resort the entire queue.
+// Note: This should NOT preempt a running job. In this skeleton remove jobs when dispatched,
+// so simply resort the entire queue.
 void queue_reschedule(job_queue_t *q, sched_policy_t new_policy);
 
 // For list output

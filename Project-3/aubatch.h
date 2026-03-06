@@ -13,7 +13,7 @@ typedef struct {
   long total_jobs_completed;
 
   double sum_turnaround; // (end - arrival)
-  double sum_cpu;        // we'll treat as wall time for now
+  double sum_cpu;        // treat as wall time for now
   double sum_waiting;    // turnaround - cpu
 
   time_t first_start;
