@@ -4,4 +4,5 @@
 # Igonre the VSCode files
 *.vscode
 
-
+# Ignore the JSON files in .obsidian
+COMP-7500-Notes/.obsidian/*.JSON
